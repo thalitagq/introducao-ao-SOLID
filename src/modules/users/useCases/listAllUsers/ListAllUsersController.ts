@@ -6,7 +6,15 @@ class ListAllUsersController {
   constructor(private listAllUsersUseCase: ListAllUsersUseCase) {}
 
   handle(request: Request, response: Response): Response {
-    // Complete aqui
+    const { user_id } = request.body;
+    const users = this.listAllUsersUseCase.execute({ user_id });
+
+    if (users.length === 0) {
+      return response
+        .status(400)
+        .send("User doesn't have administrator permission");
+    }
+    return response.status(200).json(users);
   }
 }
 
