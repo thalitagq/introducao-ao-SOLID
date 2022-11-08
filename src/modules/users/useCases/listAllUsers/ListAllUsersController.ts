@@ -6,15 +6,13 @@ class ListAllUsersController {
   constructor(private listAllUsersUseCase: ListAllUsersUseCase) {}
 
   handle(request: Request, response: Response): Response {
-    const { user_id } = request.body;
-    const users = this.listAllUsersUseCase.execute({ user_id });
-
-    if (users.length === 0) {
-      return response
-        .status(400)
-        .send("User doesn't have administrator permission");
+    const user_id = String(request.headers.user_id);
+    try {
+      const users = this.listAllUsersUseCase.execute({ user_id });
+      return response.status(200).json(users);
+    } catch (error) {
+      return response.status(400).json({ error: error.message });
     }
-    return response.status(200).json(users);
   }
 }
 

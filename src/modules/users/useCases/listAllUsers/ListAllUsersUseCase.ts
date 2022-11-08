@@ -11,11 +11,13 @@ class ListAllUsersUseCase {
   execute({ user_id }: IRequest): User[] {
     const user = this.usersRepository.findById(user_id);
 
-    if (user.admin) {
+    if (!user) {
+      throw new Error("User doesn't exists");
+    } else if (user.admin) {
       return this.usersRepository.list();
+    } else {
+      throw new Error("User doesn't have administrator permission");
     }
-
-    return [];
   }
 }
 
